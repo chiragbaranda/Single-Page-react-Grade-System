@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <!--
+    <style>
+        #Table {
+            width: 100%;
+        }
+
+        #Table table {
+            width: 100%;
+        }
+
+        #Table td {
+            border: 1px solid #ccc;
+            width: 50%;
+        }
+
+        #Table th {
+            width: 50%;
+        }
+
+        #Form label {
+            display: block;
+            margin: 15px 0;
+        }
+
+        #Form input {
+            margin-left: 10px;
+        }
+
+        #Form button {
+            width: 250px;
+            padding: 15px 0;
+            background-color: tomato;
+            border: none;
+            border-radius: 4px;
+            color: white;
+            margin: 25px 0;
+        }
+
+    </style>
+-->
+    <title>React App</title>
+    <script src="https://unpkg.com/react@16/umd/react.development.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js" crossorigin></script>
+    <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+</head>
+
+<body>
+
+    <div id="root"></div>
+
+    <script type="text/babel">
+
+        class FormContainer extends React.Component {
+  constructor() {
+    super();
+
+    this.state = {
+      id : 0,
+      courseName: '',
+      Grade: '',
+      items: []
+    }
+    
+  };
+
+  handleFormSubmit = (e) => {
+    e.preventDefault();
+
+    let items = [...this.state.items];
+
+    items.push({id: this.state.items.length+1 ,courseName: this.state.courseName, Grade: this.state.Grade});
+
+    this.setState({
+      items,
+      courseName: '',
+      Grade: ''
+    });
+  };
+
+  handleInputChange = (e) => {
+    let input = e.target;
+    let name = e.target.name;
+    let value = input.value;
+    
+    if (name === "Grade") {
+      if (!Number(value)) {
+        alert("Grade must be a number");
+      }
+    }
+      
+    this.setState({
+      [name]: value
+    })
+  };
+
+
+
+  render() {
+    return (
+      <div className="FormContainer">
+        <Form handleFormSubmit={ this.handleFormSubmit } handleInputChange={ this.handleInputChange } newcourseName={ this.state.courseName } newGrade={ this.state.Grade }/>
+        <DataTable items={ this.state.items }/>
+        <TableAnalysis items={ this.state.items } />
+      </div>
+    );
+  }
+}
+
+class DataTable extends React.Component {
+    
+  render() {
+    const items = this.props.items;
+    return (
+      <div id="Table">
+        <table className="table">
+          <tbody>
+            <tr key="top" className="thead-dark">
+              <th>Course name</th>
+              <th>Grade</th>
+              <th>Actions</th>
+            </tr>
+            
+            {this.props.items.length > 0 ? (
+        this.props.items.map(item => (
+          <tr key={item.id}>
+            <td>{item.courseName}</td>
+            <td>{item.Grade}</td>
+            <td>
+              <button className="btn btn-outline-primary">Edit</button>
+              <button className="btn btn-outline-danger">Delete</button>
+            </td>
+          </tr>
+        ))
+      ) : (
+        <tr>
+          <td colSpan={3}>No Data</td>
+        </tr>
+      )}
+          </tbody>
+        </table>
+      </div>
+    );
+  }
+}
+
+class TableAnalysis extends React.Component {
+  render() {
+    const items = this.props.items;
+    return (
+      <div id="Table">
+        <table className="table">
+          <tbody>
+            <tr className="thead-dark">
+              <th>Minimum</th>
+              <th>Average</th>
+              <th>Maximum</th>              
+            </tr>
+            
+          </tbody>
+        </table>
+      </div>
+    );
+  }
+}
+
+class Form extends React.Component {
+  render() {
+    return (
+      <div id="Form" className="card">
+       <div className="card-header">
+        <h3>Grade System</h3>  
+        </div>
+        <div className="card-body">
+        <form onSubmit={this.props.handleFormSubmit}>
+         <div className="form-group">
+          <label htmlFor="courseName">
+          courseName: </label>
+          <input id="courseName" className="form-control" value={this.props.newcourseName} type="text" name="courseName" onChange={this.props.handleInputChange} required/>
+        </div>
+         <div className="form-group">
+          <label htmlFor="Grade">
+          Grade: </label>
+          <input id="Grade" className="form-control" value={this.props.newGrade} type="text" name="Grade" onChange={this.props.handleInputChange} required />
+        </div>
+          <button className="btn btn-outline-success" type="submit" value="Submit">Add Item</button>
+        </form>
+        </div>
+      </div>
+    );
+  }
+}
+
+ReactDOM.render(<FormContainer />, document.getElementById('root'));
+
+
+  </script>
+</body>
+
+</html>
